@@ -1,0 +1,26 @@
+
+# Sample Document for RAG System
+
+## Introduction
+This is a sample document to demonstrate the RAG (Retrieval Augmented Generation) system.
+The system uses advanced natural language processing to answer questions based on document content.
+
+## Key Features
+1. Document Ingestion: Supports PDF, DOCX, TXT, and MD files
+2. Intelligent Chunking: Splits documents while preserving context
+3. Vector Search: Uses embeddings for semantic similarity
+4. Citation: Always cites sources in responses
+
+## Technical Details
+The system uses:
+- OpenAI embeddings (text-embedding-3-small)
+- ChromaDB for vector storage
+- Claude Sonnet 4 for generation
+- LangChain for orchestration
+
+## Use Cases
+Common applications include:
+- Knowledge base Q&A
+- Document analysis
+- Research assistance
+- Customer support automation
