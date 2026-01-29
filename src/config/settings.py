@@ -2,17 +2,24 @@
 Configuration management for RAG system.
 Uses Pydantic for type safety and validation.
 """
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field
 from typing import Literal
 
 
 class Settings(BaseSettings):
     """Application settings with environment variable support."""
-    
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore"
+    )
+
     # API Keys
-    openai_api_key: str = Field(..., env="OPENAI_API_KEY")
-    anthropic_api_key: str = Field(..., env="ANTHROPIC_API_KEY")
+    openai_api_key: str = Field(..., validation_alias="OPENAI_API_KEY")
+    anthropic_api_key: str = Field(..., validation_alias="ANTHROPIC_API_KEY")
     
     # Embedding Configuration
     embedding_model: str = Field(
@@ -81,11 +88,6 @@ class Settings(BaseSettings):
         default=False,
         description="Enable LangSmith tracing"
     )
-    
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
-        case_sensitive = False
 
 
 # Global settings instance
