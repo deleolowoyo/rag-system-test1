@@ -36,17 +36,39 @@ optimized = rewriter.rewrite("What's RAG?")
 
 ---
 
-### 🔲 2. Multi-Query Generation (TODO)
-**Target**: Generate multiple query variations for better recall
-**Approach**:
-- Enhance existing `MultiQueryRetriever` stub
-- Use LLM to create 3-5 query variations
-- Deduplicate and merge results
+### ✅ 2. Multi-Query Generation (COMPLETED)
+**Status**: Implemented and tested
+**Commit**: (pending)
+**Files**:
+- `src/agents/multi_query.py` - MultiQueryGenerator and MultiQueryRetriever classes
+- `tests/test_multi_query.py` - 24 comprehensive tests
+- `examples/multi_query_demo.py` - Demo script
 
-**Implementation Plan**:
-- File: `src/retrieval/query_expansion.py` (new)
-- Enhance: `src/retrieval/retriever.py`
-- Tests: `tests/test_query_expansion.py` (new)
+**Key Features**:
+- LLM-based query variation generation (temperature=0.7 for diversity)
+- Generates 3-5 variations exploring different angles
+- Automatic deduplication by content hash
+- Robust parsing (numbered lists, bullets, quotes)
+- Fallback to original query on errors
+- Merges results from all query variations
+
+**Usage Example**:
+```python
+from src.agents.multi_query import MultiQueryGenerator, MultiQueryRetriever
+
+# Generate query variations
+generator = MultiQueryGenerator()
+queries = generator.generate_queries("What is RAG?", num_queries=3)
+# Returns: ["What is RAG?", "What is Retrieval Augmented Generation?", ...]
+
+# Retrieve using multiple queries
+retriever = AdvancedRetriever(vector_store)
+multi_retriever = MultiQueryRetriever(retriever, num_queries=3, top_k_per_query=3)
+docs = multi_retriever.retrieve("What is RAG?")
+# Returns: Up to 9 unique documents (3 queries × 3 docs, deduplicated)
+```
+
+**Tests**: 24/24 passing ✓
 
 ---
 
@@ -94,9 +116,11 @@ optimized = rewriter.rewrite("What's RAG?")
 
 ## Progress Summary
 
-**Completed**: 1/5 features (20%)
-**Test Coverage**: 86 tests passing, 2 skipped
-**New Tests**: +17 tests for query rewriting
+**Completed**: 2/5 features (40%)
+**Test Coverage**: 118 tests passing, 2 skipped
+**New Tests**:
+- Query Rewriting: +25 tests (17 in test_query_rewriter.py + 8 in test_agents.py)
+- Multi-Query Generation: +24 tests (test_multi_query.py)
 
 ## Next Steps
 
@@ -116,11 +140,11 @@ src/
 ├── agents/              # NEW - Phase 2
 │   ├── __init__.py
 │   ├── query_rewriter.py   ✅
+│   ├── multi_query.py      ✅
 │   ├── react_agent.py      🔲
 │   └── self_critique.py    🔲
 ├── retrieval/
 │   ├── retriever.py        (existing)
-│   ├── query_expansion.py  🔲
 │   └── reranker.py         🔲
 └── ...
 ```
@@ -129,8 +153,8 @@ src/
 ```
 User Query
   → Query Rewriting ✅
-  → Multi-Query Expansion 🔲
-  → Retrieval
+  → Multi-Query Expansion ✅
+  → Retrieval (multiple variations)
   → Re-ranking 🔲
   → Context Generation
   → LLM Generation
@@ -150,4 +174,4 @@ User Query
 
 - **Phase 1**: 1.0.0
 - **Phase 2**: 2.0.0 (in progress)
-- **Current**: 2.0.0-alpha.1 (query rewriting complete)
+- **Current**: 2.0.0-alpha.2 (query rewriting + multi-query generation complete)
