@@ -1,16 +1,13 @@
-# Sensitive files - API Keys
-.env
-
 # Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-*.egg
-*.egg-info/
-dist/
 build/
+develop-eggs/
+dist/
+downloads/
 eggs/
 .eggs/
 lib/
@@ -19,10 +16,10 @@ parts/
 sdist/
 var/
 wheels/
-pip-wheel-metadata/
 share/python-wheels/
-develop-eggs/
+*.egg-info/
 .installed.cfg
+*.egg
 MANIFEST
 
 # Virtual Environments
@@ -32,33 +29,24 @@ ENV/
 env.bak/
 venv.bak/
 
-# Testing
-.pytest_cache/
-.coverage
-.coverage.*
-htmlcov/
-.tox/
-.nox/
-*.cover
-*.log
-.hypothesis/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-*.ipynb
-
-# IDE / Editors
+# IDEs
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 .DS_Store
-*.sublime-project
-*.sublime-workspace
 
-# Claude Code
-.claude/
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+.tox/
+
+# Environment variables (CRITICAL - contains API keys)
+.env
 
 # Vector Store Data
 data/chromadb/
@@ -68,7 +56,13 @@ data/chromadb/
 
 # Logs
 *.log
-logs/
+
+# Claude Code
+.claude/
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*.ipynb
 
 # mypy
 .mypy_cache/
@@ -77,9 +71,3 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
