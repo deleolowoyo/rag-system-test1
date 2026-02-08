@@ -6,7 +6,7 @@ Contains advanced reasoning and optimization agents:
 - MultiQueryGenerator: Generates query variations for improved recall
 - MultiQueryRetriever: Retrieves using multiple query variations
 - ReActAgent: Multi-step reasoning loops with iterative refinement
-- Self-critique: Validates generated answers (coming soon)
+- SelfCritiqueAgent: Validates generated answers for quality and accuracy
 """
 
 from src.agents.query_rewriter import QueryRewriter
@@ -21,6 +21,10 @@ from src.agents.react_agent import (
     AgentState,
     create_react_agent,
 )
+from src.agents.self_critique import (
+    SelfCritiqueAgent,
+    create_self_critique_agent,
+)
 
 __all__ = [
     'QueryRewriter',
@@ -31,6 +35,8 @@ __all__ = [
     'AgentAction',
     'AgentState',
     'create_react_agent',
+    'SelfCritiqueAgent',
+    'create_self_critique_agent',
 ]
 
 __version__ = "2.0.0"

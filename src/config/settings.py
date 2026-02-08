@@ -78,7 +78,43 @@ class Settings(BaseSettings):
         default=2048,
         description="Maximum tokens in LLM response"
     )
-    
+
+    # Phase 2 Feature Flags
+    enable_query_rewriting: bool = Field(
+        default=True,
+        description="Enable query optimization/rewriting"
+    )
+    enable_multi_query: bool = Field(
+        default=True,
+        description="Enable multi-query generation for improved recall"
+    )
+    enable_reranking: bool = Field(
+        default=True,
+        description="Enable document re-ranking"
+    )
+    enable_react_agent: bool = Field(
+        default=False,
+        description="Enable ReAct agent for multi-step reasoning (expensive)"
+    )
+    enable_self_critique: bool = Field(
+        default=True,
+        description="Enable self-critique validation of answers"
+    )
+
+    # Phase 2 Configuration
+    react_max_iterations: int = Field(
+        default=5,
+        description="Maximum iterations for ReAct agent"
+    )
+    multi_query_count: int = Field(
+        default=3,
+        description="Number of query variations to generate"
+    )
+    rerank_top_k: int = Field(
+        default=5,
+        description="Number of documents to keep after re-ranking"
+    )
+
     # System Configuration
     log_level: str = Field(
         default="INFO",
