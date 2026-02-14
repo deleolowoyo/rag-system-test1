@@ -54,6 +54,14 @@ data/chromadb/
 *.pkl
 *.index
 
+# Phase 3: MCP Data and Credentials
+credentials/*.json
+credentials/*.token
+!credentials/README.md
+data/filesystem/
+data/app.db
+data/*.db
+
 # Logs
 *.log
 

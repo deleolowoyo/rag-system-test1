@@ -2,9 +2,10 @@
 Configuration management for RAG system.
 Uses Pydantic for type safety and validation.
 """
+import os
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field
-from typing import Literal
+from pydantic import Field, model_validator
+from typing import List, Literal
 
 
 class Settings(BaseSettings):
@@ -115,6 +116,46 @@ class Settings(BaseSettings):
         description="Number of documents to keep after re-ranking"
     )
 
+    # Phase 3: MCP (Model Context Protocol) - Anthropic SDK
+    enable_mcp: bool = Field(
+        default=True,
+        description="Enable MCP tool integration"
+    )
+    mcp_timeout: int = Field(
+        default=30,
+        description="Timeout in seconds for MCP tool calls"
+    )
+
+    # Filesystem MCP Server
+    mcp_filesystem_enabled: bool = Field(
+        default=True,
+        description="Enable filesystem MCP server"
+    )
+    mcp_filesystem_root: str = Field(
+        default="",
+        description="Absolute root path for filesystem MCP server (absolute paths required)"
+    )
+
+    # SQLite MCP Server
+    mcp_sqlite_enabled: bool = Field(
+        default=True,
+        description="Enable SQLite MCP server"
+    )
+    mcp_sqlite_db_path: str = Field(
+        default="",
+        description="Absolute path to SQLite database file (absolute paths required)"
+    )
+
+    # Google Drive MCP Server
+    mcp_gdrive_enabled: bool = Field(
+        default=False,
+        description="Enable Google Drive MCP server (requires credentials)"
+    )
+    mcp_gdrive_credentials_path: str = Field(
+        default="./credentials/google_credentials.json",
+        description="Path to Google Drive OAuth2 credentials file"
+    )
+
     # System Configuration
     log_level: str = Field(
         default="INFO",
@@ -124,6 +165,40 @@ class Settings(BaseSettings):
         default=False,
         description="Enable LangSmith tracing"
     )
+
+    @property
+    def mcp_servers_enabled(self) -> List[str]:
+        """Return list of enabled MCP server names."""
+        servers = []
+        if self.mcp_filesystem_enabled:
+            servers.append("filesystem")
+        if self.mcp_sqlite_enabled:
+            servers.append("sqlite")
+        if self.mcp_gdrive_enabled:
+            servers.append("google_drive")
+        return servers
+
+    @model_validator(mode='after')
+    def validate_mcp_paths(self) -> 'Settings':
+        """Validate that MCP paths are absolute when MCP is enabled."""
+        if not self.enable_mcp:
+            return self
+
+        if self.mcp_filesystem_enabled and self.mcp_filesystem_root:
+            if not os.path.isabs(self.mcp_filesystem_root):
+                raise ValueError(
+                    f"MCP_FILESYSTEM_ROOT must be an absolute path, "
+                    f"got: '{self.mcp_filesystem_root}'"
+                )
+
+        if self.mcp_sqlite_enabled and self.mcp_sqlite_db_path:
+            if not os.path.isabs(self.mcp_sqlite_db_path):
+                raise ValueError(
+                    f"MCP_SQLITE_DB_PATH must be an absolute path, "
+                    f"got: '{self.mcp_sqlite_db_path}'"
+                )
+
+        return self
 
 
 # Global settings instance
